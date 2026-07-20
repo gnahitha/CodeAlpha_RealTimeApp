@@ -1,0 +1,178 @@
+.toolbar{
+
+position:fixed;
+
+bottom:20px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+background:#2b2b2b;
+
+padding:10px 20px;
+
+border-radius:50px;
+
+display:flex;
+
+gap:15px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.5);
+
+}
+.tool-btn{
+
+width:58px;
+
+height:58px;
+
+border-radius:50%;
+
+font-size:13px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+.tool-btn span{
+
+display:none;
+
+}
+
+.tool-btn:hover{
+
+    transform:translateY(-4px);
+
+    background:#f1f3f4;
+
+}
+
+.tool-btn i{
+
+    font-size:24px;
+
+    color:#1a73e8;
+
+}
+
+.tool-btn span{
+
+    font-size:13px;
+
+    font-weight:500;
+
+}
+
+.danger{
+
+    background:#ea4335;
+
+    color:white;
+
+}
+
+.danger i{
+
+    color:white;
+
+}
+
+.danger:hover{
+
+    background:#c62828;
+
+}
+
+
+.control-btn{
+
+    width:75px;
+
+    height:75px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:#3c4043;
+
+    color:white;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    font-size:22px;
+
+}
+
+.control-btn span{
+
+    font-size:12px;
+
+    margin-top:5px;
+
+}
+
+.control-btn:hover{
+
+    transform:scale(1.08);
+
+    background:#5f6368;
+
+}
+
+.leave-btn{
+
+    width:85px;
+
+    height:85px;
+
+    border-radius:50%;
+
+    background:#d93025;
+
+    color:white;
+
+    border:none;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    font-size:24px;
+
+}
+
+.leave-btn span{
+
+    font-size:12px;
+
+    margin-top:5px;
+
+}
+
+.leave-btn:hover{
+
+    background:#b3261e;
+
+}

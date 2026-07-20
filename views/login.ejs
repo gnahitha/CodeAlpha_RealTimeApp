@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Login</h1>
+
+<form id="loginForm">
+
+<input
+type="email"
+id="email"
+placeholder="Enter Email"
+required
+>
+
+<input
+type="password"
+id="password"
+placeholder="Enter Password"
+required
+>
+
+<button type="submit">
+Login
+</button>
+
+</form>
+
+<br>
+
+<a href="/register">
+Don't have an account? Register
+</a>
+
+</div>
+
+<script>
+
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+
+const response=await fetch("/login",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email,
+password
+})
+});
+
+const data=await response.json();
+console.log("Login Response:", data);
+
+
+if(data.token){
+
+localStorage.setItem("token",data.token);
+localStorage.setItem("username", data.username);
+localStorage.setItem("email", data.email);
+
+alert(data.message);
+
+window.location.href="/room";
+
+}else{
+
+alert(data.message);
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

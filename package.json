@@ -1,0 +1,31 @@
+{
+  "name": "codealpha_realtimeapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.1",
+    "multer": "^2.2.0",
+    "peer": "^1.0.2",
+    "peerjs": "^1.5.5",
+    "peerjs-server": "^0.2.9",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

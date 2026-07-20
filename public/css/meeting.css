@@ -1,0 +1,157 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#202124;
+    color:#fff;
+    overflow:hidden;
+}
+
+/* HEADER */
+
+.meet-header{
+    height:65px;
+    background:#202124;
+    border-bottom:1px solid #3c4043;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 25px;
+}
+
+.header-left,
+.header-center,
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-size:28px;
+    font-weight:700;
+}
+
+.logo i{
+    color:#4a8cff;
+}
+
+.meeting-id{
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    color:#ddd;
+}
+
+.header-btn{
+
+    background:#1a73e8;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.header-btn:hover{
+
+    background:#1558b0;
+
+}
+.meeting-layout{
+
+    display:flex;
+
+    height:calc(100vh - 65px);
+
+}
+.settings-modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.5);
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+.settings-content{
+
+background:#2d2f33;
+
+padding:30px;
+
+border-radius:15px;
+
+width:350px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:20px;
+
+}
+
+.setting-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+.settings-content button{
+
+background:#1a73e8;
+
+border:none;
+
+padding:12px;
+
+border-radius:10px;
+
+color:white;
+
+cursor:pointer;
+
+}
+.meeting-time{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-weight:600;
+
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Meeting Room</title>
+
+    
+    <link rel="stylesheet" href="/css/meeting.css">
+    <link rel="stylesheet" href="/css/video.css">
+    <link rel="stylesheet" href="/css/toolbar.css">
+    <link rel="stylesheet" href="/css/chat.css">
+    <link rel="stylesheet" href="/css/whiteboard.css">
+    <link rel="stylesheet" href="/css/landing.css">
+    <link rel="stylesheet" href="/css/participants.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="/css/base.css">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+</head>
+
+<body>
+
+<% if(typeof roomId !== "undefined"){ %>
+<header class="meet-header">
+
+    <div class="header-left">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-video"></i>
+
+            <span>MeetX</span>
+
+        </div>
+
+    </div>
+
+    <div class="header-center">
+
+        <div class="meeting-id">
+
+            <i class="fa-solid fa-hashtag"></i>
+
+            <span id="meetingCode"><%= roomId %></span>
+
+        </div>
+
+        <button id="copyLinkBtn" class="header-btn">
+
+            <i class="fa-regular fa-copy"></i>
+
+            <span>Copy Link</span>
+
+        </button>
+
+    </div>
+
+    <div class="header-right">
+
+        <div class="meeting-time">
+
+            <i class="fa-regular fa-clock"></i>
+
+            <span id="meetingTimer">00:00:00</span>
+
+        </div>
+
+        <button id="participantsBtn" class="participants-btn">
+
+            <i class="fa-solid fa-users"></i>
+
+            <span id="participantCount">1</span>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="meeting-layout">
+
+    <!-- ================= VIDEO SECTION ================= -->
+
+   <section class="video-section">
+
+        <div id="video-grid">
+
+            <!-- My Video -->
+            <div class="video-card my-card">
+
+                <video
+                    id="myVideo"
+                    autoplay
+                    muted
+                    playsinline>
+                </video>
+                <div id="cameraOffAvatar" class="camera-off-avatar">
+
+                    <div id="avatarLetter" class="avatar-letter">
+                        G
+                    </div>
+
+                    <h3 id="avatarName"></h3>
+
+                </div>
+
+                <div class="video-overlay">
+
+                    <div class="video-user">
+
+                        <i class="fa-solid fa-circle-user"></i>
+
+                        <span id="myName">You</span>
+
+                    </div>
+
+                    <div class="video-status">
+
+                        <i id="myMicIcon"
+                        class="fa-solid fa-microphone"></i>
+
+                        <i id="myCamIcon"
+                        class="fa-solid fa-video"></i>
+
+                    </div>
+
+                </div>
+
+                </div>
+
+        </div>
+
+    </section>
+    <!-- ================= RIGHT PANEL ================= -->
+
+</main>
+
+<div id="chatPanel" class="chat-panel">
+
+    <div class="chat-header">
+
+        <h3>
+
+            <i class="fa-solid fa-comments"></i>
+
+            Chat
+
+        </h3>
+
+        <button id="closeChat">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="chat-input">
+
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Type a message">
+
+        <button id="sendBtn">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+<div id="participantsPanel" class="participants-panel">
+
+    <div class="participants-header">
+
+        <h3>
+
+            <i class="fa-solid fa-users"></i>
+
+            Participants
+
+        </h3>
+
+        <button id="closeParticipants">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+    <div id="participants">
+
+        <div class="participant">
+
+            <i class="fa-solid fa-circle-user"></i>
+
+            <span>You</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= TOOLBAR ================= -->
+<footer class="toolbar">
+
+    <button id="micBtn" class="tool-btn">
+
+        <i class="fa-solid fa-microphone"></i>
+
+        <span>Mic</span>
+
+    </button>
+
+    <button id="cameraBtn" class="tool-btn">
+
+        <i class="fa-solid fa-video"></i>
+
+        <span>Camera</span>
+
+    </button>
+
+   <button id="shareBtn" class="tool-btn">
+
+        <i class="fa-solid fa-share-nodes"></i>
+
+        <span>Invite</span>
+
+    </button>
+
+    <button id="shareScreenBtn" class="tool-btn">
+
+        <i class="fa-solid fa-display"></i>
+
+        <span>Screen</span>
+
+    </button>
+
+    <button id="whiteboardBtn" class="tool-btn">
+
+        <i class="fa-solid fa-pen-ruler"></i>
+
+        <span>Board</span>
+
+    </button>
+
+    <button id="chatBtn" class="tool-btn">
+
+        <i class="fa-solid fa-comments"></i>
+
+        <span>Chat</span>
+
+    </button>
+
+    <button id="settingsBtn" class="tool-btn">
+
+        <i class="fa-solid fa-gear"></i>
+
+        <span>Settings</span>
+
+    </button>
+
+    <button id="leaveBtn" class="tool-btn danger">
+
+        <i class="fa-solid fa-phone-slash"></i>
+
+        <span>Leave</span>
+
+    </button>
+
+</footer>
+
+<% } else { %>
+
+<div class="landing-page">
+
+    <div class="left-side">
+
+        <img src="/images/meeting.png" alt="Meeting">
+
+    </div>
+
+    <div class="right-side">
+
+        <div class="meeting-card">
+
+            <h1>MeetX</h1>
+
+            <p>Secure meetings for everyone</p>
+
+            <button class="primary-btn" onclick="createRoom()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Create Meeting
+
+            </button>
+
+            <div class="divider">
+
+                OR
+
+            </div>
+
+            <input
+                type="text"
+                id="roomId"
+                placeholder="Enter Meeting ID">
+
+            <button class="secondary-btn" onclick="joinRoom()">
+
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+
+                Join Meeting
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<% } %>
+<!-- Whiteboard Modal -->
+<% if(typeof roomId !== "undefined"){ %>
+<div id="whiteboardModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+
+                <i class="fa-solid fa-pen-ruler"></i>
+
+                Whiteboard
+
+            </h2>
+
+            <button id="closeBoard">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="board-toolbar">
+
+            <button id="pencilBtn">
+
+                <i class="fa-solid fa-pencil"></i>
+
+            </button>
+
+            <button id="eraserBtn">
+
+                <i class="fa-solid fa-eraser"></i>
+
+            </button>
+
+            <input
+                type="color"
+                id="colorPicker"
+                value="#000000">
+
+            <select id="brushSize">
+
+                <option value="2">2px</option>
+
+                <option value="4" selected>4px</option>
+
+                <option value="6">6px</option>
+
+                <option value="8">8px</option>
+
+            </select>
+
+            <button id="downloadBoard">
+
+                <i class="fa-solid fa-download"></i>
+
+            </button>
+
+            <button id="clearBoard">
+
+                <i class="fa-solid fa-trash"></i>
+
+            </button>
+
+        </div>
+
+        <canvas
+            id="whiteboard"
+            width="1200"
+            height="650">
+        </canvas>
+
+    </div>
+
+</div>
+<% } %>
+<div id="notificationContainer"></div>
+<div id="settingsModal" class="settings-modal">
+
+    <div class="settings-content">
+
+        <h2>
+
+            <i class="fa-solid fa-gear"></i>
+
+            Settings
+
+        </h2>
+
+        <div class="setting-item">
+
+            <label>Theme</label>
+
+            <select id="themeSelect">
+
+                <option>Dark</option>
+
+                <option>Light</option>
+
+            </select>
+
+        </div>
+
+        <button id="saveSettings">
+
+            Save
+
+        </button>
+
+    </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+
+<script>
+
+const ROOM_ID = "<%= typeof roomId !== 'undefined' ? roomId : '' %>";
+
+</script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/room.js"></script>
+
+<script src="/js/camera.js"></script>
+
+<script src="/js/mediaControls.js"></script>
+
+<script src="/js/chat.js"></script>
+
+<script src="/js/screenshare.js"></script>
+
+<script src="/js/whiteboardUI.js"></script>
+
+<script src="/js/whiteboard.js"></script>
+
+<script src="/js/copyLink.js"></script>
+
+<script src="/js/shareMeeting.js"></script>
+
+<script src="/js/leave.js"></script>
+
+<script src="/js/chatToggle.js"></script>
+
+<script src="/js/meetingTimer.js"></script>
+
+<script src="/js/participants.js"></script>
+
+<script src="/js/settings.js"></script>
+
+</body>
+
+</html>
