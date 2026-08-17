@@ -4,112 +4,144 @@ const micBtn = document.getElementById("micBtn");
 let cameraOn = true;
 let micOn = true;
 
-if (cameraBtn) {
+function getLocalStream() {
+    return window.myStream || myStream;
+}
 
-    cameraBtn.addEventListener("click", () => {
+function emitMediaState() {
+    if (!ROOM_ID || typeof socket === "undefined") return;
 
-        if (!myStream) return;
+    socket.emit("media-state", {
+        roomId: ROOM_ID,
+        peerId: window.myPeerId,
+        cameraOn,
+        micOn
+    });
+}
 
-        const videoTrack = myStream.getVideoTracks()[0];
+function applyCameraState(enabled) {
+    const stream = getLocalStream();
+    if (!stream) return false;
 
-        if (!videoTrack) return;
+    const videoTrack = stream.getVideoTracks()[0];
+    if (!videoTrack) return false;
 
-        cameraOn = !cameraOn;
+    cameraOn = enabled;
+    videoTrack.enabled = cameraOn;
 
-        videoTrack.enabled = cameraOn;
-        const myCamIcon = document.getElementById("myCamIcon");
-        const avatar = document.getElementById("cameraOffAvatar");
-        const video = document.getElementById("myVideo");
+    const myCamIcon = document.getElementById("myCamIcon");
+    const avatar = document.getElementById("cameraOffAvatar");
+    const video = document.getElementById("myVideo");
 
-        if (cameraOn) {
-
+    if (cameraOn) {
+        if (myCamIcon) {
             myCamIcon.className = "fa-solid fa-video";
             myCamIcon.style.color = "#ffffff";
-
-            video.style.display = "block";
-            avatar.style.display = "none";
-
-        } else {
-
-            myCamIcon.className = "fa-solid fa-video-slash";
-            myCamIcon.style.color = "#ff4d4d";
-
-            video.style.display = "none";
-            avatar.style.display = "flex";
-
         }
-
-        if (cameraOn) {
-
+        if (video) video.style.display = "block";
+        if (avatar) avatar.style.display = "none";
+        if (cameraBtn) {
             cameraBtn.style.background = "#3c4043";
-
             cameraBtn.innerHTML = `
                 <i class="fa-solid fa-video"></i>
                 <span>Camera</span>
             `;
-
-        } else {
-
+        }
+    } else {
+        if (myCamIcon) {
+            myCamIcon.className = "fa-solid fa-video-slash";
+            myCamIcon.style.color = "#ff4d4d";
+        }
+        if (video) video.style.display = "none";
+        if (avatar) avatar.style.display = "flex";
+        if (cameraBtn) {
             cameraBtn.style.background = "#d93025";
-
             cameraBtn.innerHTML = `
                 <i class="fa-solid fa-video-slash"></i>
                 <span>Camera Off</span>
             `;
-
         }
+    }
 
-    });
+    emitMediaState();
 
+    if (typeof window.syncSettingsMediaToggles === "function") {
+        window.syncSettingsMediaToggles();
+    }
+
+    return true;
 }
 
-if (micBtn) {
+function applyMicState(enabled) {
+    const stream = getLocalStream();
+    if (!stream) return false;
 
-    micBtn.addEventListener("click", () => {
+    const audioTrack = stream.getAudioTracks()[0];
+    if (!audioTrack) return false;
 
-        if (!myStream) return;
+    micOn = enabled;
+    audioTrack.enabled = micOn;
 
-        const audioTrack = myStream.getAudioTracks()[0];
+    const myMicIcon = document.getElementById("myMicIcon");
 
-        if (!audioTrack) return;
-
-        micOn = !micOn;
-
-        audioTrack.enabled = micOn;
-        const myMicIcon = document.getElementById("myMicIcon");
-
-        if (micOn) {
-
+    if (micOn) {
+        if (myMicIcon) {
             myMicIcon.className = "fa-solid fa-microphone";
             myMicIcon.style.color = "#ffffff";
-
-        } else {
-
-            myMicIcon.className = "fa-solid fa-microphone-slash";
-            myMicIcon.style.color = "#ff4d4d";
-
         }
-
-        if (micOn) {
-
+        if (micBtn) {
             micBtn.style.background = "#3c4043";
-
             micBtn.innerHTML = `
                 <i class="fa-solid fa-microphone"></i>
                 <span>Mic</span>
             `;
-
-        } else {
-
+        }
+    } else {
+        if (myMicIcon) {
+            myMicIcon.className = "fa-solid fa-microphone-slash";
+            myMicIcon.style.color = "#ff4d4d";
+        }
+        if (micBtn) {
             micBtn.style.background = "#d93025";
-
             micBtn.innerHTML = `
                 <i class="fa-solid fa-microphone-slash"></i>
                 <span>Muted</span>
             `;
-
         }
+    }
 
+    emitMediaState();
+
+    if (typeof window.syncSettingsMediaToggles === "function") {
+        window.syncSettingsMediaToggles();
+    }
+
+    return true;
+}
+
+window.getMediaControlState = function () {
+    return {
+        cameraOn,
+        micOn
+    };
+};
+
+window.setCameraEnabled = function (enabled) {
+    return applyCameraState(enabled);
+};
+
+window.setMicrophoneEnabled = function (enabled) {
+    return applyMicState(enabled);
+};
+
+if (cameraBtn) {
+    cameraBtn.addEventListener("click", () => {
+        applyCameraState(!cameraOn);
     });
+}
 
+if (micBtn) {
+    micBtn.addEventListener("click", () => {
+        applyMicState(!micOn);
+    });
 }

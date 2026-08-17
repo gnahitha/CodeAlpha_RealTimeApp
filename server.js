@@ -54,129 +54,128 @@ app.get("/room/:roomId", (req, res) => {
     });
 });
 
+function leaveRoom(socket) {
+    const roomId = socket.roomId;
+    if (!roomId || !rooms[roomId]) {
+        socket.roomId = null;
+        socket.joined = false;
+        return;
+    }
+
+    const socketId = socket.id;
+    const peerId = socket.peerId;
+    const existed = rooms[roomId].some((user) => user.socketId === socketId);
+
+    if (!existed) {
+        socket.roomId = null;
+        socket.joined = false;
+        return;
+    }
+
+    rooms[roomId] = rooms[roomId].filter((user) => {
+        return user.socketId !== socketId;
+    });
+
+    socket.to(roomId).emit("user-disconnected", {
+        socketId,
+        peerId
+    });
+
+    io.to(roomId).emit("participants-update", rooms[roomId]);
+
+    if (rooms[roomId].length === 0) {
+        delete rooms[roomId];
+    }
+
+    socket.leave(roomId);
+    socket.roomId = null;
+    socket.joined = false;
+}
+
 // Socket.io
 io.on("connection", (socket) => {
 
     console.log("New User Connected");
+
     socket.on("join-room", (data) => {
+        if (!data || !data.roomId || !data.peerId) return;
+        if (socket.joined && socket.roomId === data.roomId) return;
 
-    socket.roomId = data.roomId;
-    socket.username = data.username;
-    socket.peerId = data.peerId;
+        if (socket.joined) {
+            leaveRoom(socket);
+        }
 
+        socket.roomId = data.roomId;
+        socket.username = data.username;
+        socket.peerId = data.peerId;
+        socket.joined = true;
 
-    socket.join(data.roomId);
+        socket.join(data.roomId);
 
+        if (!rooms[data.roomId]) {
+            rooms[data.roomId] = [];
+        }
 
-    if (!rooms[data.roomId]) {
-        rooms[data.roomId] = [];
-    }
+        socket.emit("existing-users", rooms[data.roomId]);
 
+        const user = {
+            socketId: socket.id,
+            peerId: data.peerId,
+            username: data.username,
+            cameraOn: true,
+            micOn: true
+        };
 
-    // Existing users
-    socket.emit(
-        "existing-users",
-        rooms[data.roomId]
-    );
+        rooms[data.roomId].push(user);
 
+        socket.to(data.roomId).emit("user-connected", user);
 
-    const user = {
+        io.to(data.roomId).emit("participants-update", rooms[data.roomId]);
+    });
 
-        socketId: socket.id,
-        peerId: data.peerId,
-        username: data.username
+    socket.on("media-state", (data) => {
+        if (!socket.roomId || !rooms[socket.roomId] || !data) return;
 
-    };
+        const user = rooms[socket.roomId].find((entry) => {
+            return entry.socketId === socket.id;
+        });
 
+        if (user) {
+            user.cameraOn = data.cameraOn !== false;
+            user.micOn = data.micOn !== false;
+        }
 
-    // Add user
-    rooms[data.roomId].push(user);
+        socket.to(socket.roomId).emit("media-state", {
+            peerId: socket.peerId,
+            cameraOn: data.cameraOn !== false,
+            micOn: data.micOn !== false
+        });
+    });
 
-
-    // Notify others for WebRTC
-    socket.to(data.roomId)
-        .emit(
-            "user-connected",
-            user
-        );
-
-
-    // IMPORTANT: Send updated participant list
-    io.to(data.roomId)
-        .emit(
-            "participants-update",
-            rooms[data.roomId]
-        );
-
-
-});
+    socket.on("leave-room", () => {
+        leaveRoom(socket);
+    });
 
     socket.on("draw", (data) => {
-
         socket.to(data.roomId).emit("draw", data);
-
     });
 
     socket.on("clear-board", (roomId) => {
-
         socket.to(roomId).emit("clear-board");
-
     });
 
     socket.on("chat-message", (data) => {
-
         io.to(data.roomId).emit("receive-message", {
-
             sender: data.sender,
-
-            message: data.message
-
+            message: data.message,
+            socketId: socket.id
         });
-
     });
-    
+
     socket.on("disconnect", () => {
+        leaveRoom(socket);
+    });
 
-    if (!socket.roomId) return;
-
-
-    if (rooms[socket.roomId]) {
-
-
-        rooms[socket.roomId] =
-            rooms[socket.roomId].filter(user => {
-
-                return user.socketId !== socket.id;
-
-            });
-
-
-        socket.to(socket.roomId)
-            .emit("user-disconnected", {
-
-                socketId: socket.id,
-                peerId: socket.peerId
-
-            });
-
-
-        // Update everyone
-        io.to(socket.roomId)
-            .emit(
-                "participants-update",
-                rooms[socket.roomId]
-            );
-
-
-        if (rooms[socket.roomId].length === 0) {
-
-            delete rooms[socket.roomId];
-
-        }
-
-    }
-
-});
 });
 
 // Start Server

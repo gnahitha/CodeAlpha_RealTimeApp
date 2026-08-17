@@ -2,100 +2,113 @@ const myVideo = document.getElementById("myVideo");
 
 let myStream;
 
-navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true
-})
-.then((stream) => {
+if (ROOM_ID) {
 
-    myStream = stream;
+    navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    })
+    .then((stream) => {
 
-    window.myStream = stream;
+        myStream = stream;
+        window.myStream = stream;
 
-    myVideo.srcObject = stream;
+        if (myVideo) {
+            myVideo.srcObject = stream;
+            myVideo.onloadedmetadata = () => {
+                myVideo.play();
+            };
+        }
 
-    myVideo.onloadedmetadata = () => {
+        if (typeof window.tryJoinRoom === "function") {
+            window.tryJoinRoom();
+        }
 
-        myVideo.play();
+    })
+    .catch((err) => {
 
-    };
-
-    // Answer incoming calls
-    peer.on("call", (call) => {
-
-        call.answer(stream);
-
-        const video = document.createElement("video");
-
-        video.autoplay = true;
-        video.playsInline = true;
-
-        window.peers[call.peer] = call;
-
-        call.on("stream", (userVideoStream) => {
-
-            window.addVideoStream(video, userVideoStream);
-
-        });
-
-        call.on("close", () => {
-
-            video.parentElement?.remove();
-
-            delete window.peers[call.peer];
-
-        });
+        console.log(err);
+        alert("Camera Permission Denied");
 
     });
 
-})
-.catch((err) => {
+}
 
-    console.log(err);
+function addVideoStream(stream, peerId, username = "Participant") {
 
-    alert("Camera Permission Denied");
-
-});
-
-function addVideoStream(video, stream, username = "Participant") {
-
-    // Don't add same stream twice
-    if (video.srcObject) return;
-
-    video.srcObject = stream;
+    if (!stream || !peerId) return;
+    if (peerId === window.myPeerId) return;
 
     const videoGrid = document.getElementById("video-grid");
+    if (!videoGrid) return;
+
+    const existingCard = document.getElementById(`video-card-${peerId}`);
+
+    if (existingCard) {
+        const video = existingCard.querySelector("video");
+        if (video && video.srcObject !== stream) {
+            video.srcObject = stream;
+            video.onloadedmetadata = () => {
+                video.play().catch(() => {});
+            };
+        }
+
+        const nameEl = existingCard.querySelector(".video-user span");
+        if (nameEl && username) {
+            nameEl.textContent = username;
+        }
+
+        const letterEl = existingCard.querySelector(".avatar-letter");
+        if (letterEl && username) {
+            letterEl.textContent = username.charAt(0).toUpperCase();
+        }
+
+        const avatarNameEl = existingCard.querySelector(".camera-off-avatar h3");
+        if (avatarNameEl && username) {
+            avatarNameEl.textContent = username;
+        }
+
+        return;
+    }
+
+    const video = document.createElement("video");
+    video.autoplay = true;
+    video.playsInline = true;
+    video.srcObject = stream;
 
     const card = document.createElement("div");
-
     card.className = "video-card";
+    card.id = `video-card-${peerId}`;
 
-    const footer = document.createElement("div");
+    const initial = (username || "P").charAt(0).toUpperCase();
 
-    footer.className = "video-footer";
+    const avatar = document.createElement("div");
+    avatar.className = "camera-off-avatar";
+    avatar.innerHTML = `
+        <div class="avatar-letter">${initial}</div>
+        <h3>${username}</h3>
+    `;
 
-    footer.innerHTML = `
+    const overlay = document.createElement("div");
+    overlay.className = "video-overlay";
+    overlay.innerHTML = `
         <div class="video-user">
             <i class="fa-solid fa-circle-user"></i>
             <span>${username}</span>
         </div>
-
         <div class="video-status">
-            <i class="fa-solid fa-microphone"></i>
-            <i class="fa-solid fa-video"></i>
+            <i class="fa-solid fa-microphone remote-mic-icon"></i>
+            <i class="fa-solid fa-video remote-cam-icon"></i>
         </div>
     `;
 
     card.appendChild(video);
-
-    card.appendChild(footer);
-
+    card.appendChild(avatar);
+    card.appendChild(overlay);
     videoGrid.appendChild(card);
 
     video.onloadedmetadata = () => {
-
-        video.play();
-
+        video.play().catch(() => {});
     };
 
 }

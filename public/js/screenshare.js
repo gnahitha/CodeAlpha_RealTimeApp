@@ -1,33 +1,27 @@
-const shareBtn = document.getElementById("shareScreenBtn");
+const screenShareBtn = document.getElementById("shareScreenBtn");
 
-if(shareBtn){
+if (screenShareBtn) {
 
-shareBtn.onclick = async ()=>{
+    screenShareBtn.onclick = async () => {
 
-try{
+        try {
 
-const stream = await navigator.mediaDevices.getDisplayMedia({
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: true
+            });
 
-video:true
+            const videoTrack = stream.getVideoTracks()[0];
 
-});
+            myVideo.srcObject = stream;
 
-const videoTrack = stream.getVideoTracks()[0];
+            videoTrack.onended = () => {
+                location.reload();
+            };
 
-myVideo.srcObject = stream;
+        } catch (err) {
+            console.log(err);
+        }
 
-videoTrack.onended=()=>{
-
-location.reload();
-
-};
-
-}catch(err){
-
-console.log(err);
-
-}
-
-}
+    };
 
 }

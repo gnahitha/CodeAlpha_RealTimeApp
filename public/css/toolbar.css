@@ -20,6 +20,8 @@ gap:15px;
 
 box-shadow:0 8px 25px rgba(0,0,0,.5);
 
+overflow:visible;
+
 }
 .tool-btn{
 
@@ -37,8 +39,66 @@ justify-content:center;
 
 align-items:center;
 
+position:relative;
+
+overflow:visible;
+
 }
-.tool-btn span{
+
+#chatBtn{
+    position:relative;
+    overflow:visible;
+}
+
+.chat-badge,
+#chatBadge{
+    position:absolute;
+    top:-5px;
+    right:-5px;
+    min-width:20px;
+    height:20px;
+    padding:0 5px;
+    background:#d93025;
+    color:#fff;
+    border-radius:50%;
+    font-size:11px;
+    font-weight:700;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    border:2px solid #2b2b2b;
+    box-shadow:none;
+    z-index:100;
+    pointer-events:none;
+    line-height:1;
+    animation:chatBadgePop .2s ease;
+}
+
+.chat-badge.visible,
+#chatBadge.visible{
+    display:flex !important;
+}
+
+@keyframes chatBadgePop{
+
+from{
+
+transform:scale(.65);
+
+opacity:0;
+
+}
+
+to{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
+.tool-btn span:not(#chatBadge){
 
 display:none;
 
@@ -60,7 +120,7 @@ display:none;
 
 }
 
-.tool-btn span{
+.tool-btn span:not(#chatBadge){
 
     font-size:13px;
 

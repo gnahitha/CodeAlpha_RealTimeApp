@@ -5,6 +5,17 @@
 
     <title>Meeting Room</title>
 
+    <script>
+        (function () {
+            if (location.pathname.indexOf("/room/") === 0) {
+                document.documentElement.setAttribute(
+                    "data-theme",
+                    localStorage.getItem("meetx-theme") || "dark"
+                );
+            }
+        })();
+    </script>
+
     
     <link rel="stylesheet" href="/css/meeting.css">
     <link rel="stylesheet" href="/css/video.css">
@@ -265,6 +276,8 @@
 
         <span>Chat</span>
 
+        <span id="chatBadge" class="chat-badge"></span>
+
     </button>
 
     <button id="settingsBtn" class="tool-btn">
@@ -417,35 +430,186 @@
 </div>
 <% } %>
 <div id="notificationContainer"></div>
-<div id="settingsModal" class="settings-modal">
+<div id="shareModal" class="share-modal" aria-hidden="true">
 
-    <div class="settings-content">
+    <div class="share-modal-card" role="dialog" aria-labelledby="shareModalTitle">
 
-        <h2>
+        <div class="share-modal-header">
+
+            <h3 id="shareModalTitle">
+
+                <i class="fa-solid fa-share-nodes"></i>
+
+                Share Meeting
+
+            </h3>
+
+            <button type="button" id="closeShareModal" aria-label="Close share dialog">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <p class="share-modal-subtitle">Invite people to join your meeting</p>
+
+        <div class="share-link-box">
+
+            <input id="shareMeetingLink" type="text" readonly>
+
+            <button type="button" id="shareCopyBtn">
+
+                <i class="fa-regular fa-copy"></i>
+
+                <span>Copy link</span>
+
+            </button>
+
+        </div>
+
+        <p class="share-modal-subtitle">Or share via</p>
+
+        <div class="share-actions">
+
+            <button type="button" id="shareWhatsAppBtn" class="share-action-btn">
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+                <span>WhatsApp</span>
+
+            </button>
+
+            <button type="button" id="shareEmailBtn" class="share-action-btn">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <span>Email</span>
+
+            </button>
+
+            <button type="button" id="shareNativeBtn" class="share-action-btn">
+
+                <i class="fa-solid fa-ellipsis"></i>
+
+                <span>More</span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="settingsPanel" class="settings-panel" role="dialog" aria-label="Settings">
+
+    <div class="settings-panel-header">
+
+        <h3>
 
             <i class="fa-solid fa-gear"></i>
 
             Settings
 
-        </h2>
+        </h3>
 
-        <div class="setting-item">
+        <button id="closeSettings" type="button" aria-label="Close settings">
 
-            <label>Theme</label>
+            <i class="fa-solid fa-xmark"></i>
 
-            <select id="themeSelect">
+        </button>
 
-                <option>Dark</option>
+    </div>
 
-                <option>Light</option>
+    <div class="settings-section">
 
-            </select>
+        <p class="settings-section-title">Appearance</p>
+
+        <button type="button" class="theme-option" data-theme="light">
+
+            <span class="theme-option-label">
+
+                <i class="fa-solid fa-sun"></i>
+
+                Light
+
+            </span>
+
+            <i class="fa-solid fa-check theme-check"></i>
+
+        </button>
+
+        <button type="button" class="theme-option" data-theme="dark">
+
+            <span class="theme-option-label">
+
+                <i class="fa-solid fa-moon"></i>
+
+                Dark
+
+            </span>
+
+            <i class="fa-solid fa-check theme-check"></i>
+
+        </button>
+
+    </div>
+
+    <div class="settings-section">
+
+        <p class="settings-section-title">Audio</p>
+
+        <div class="settings-row">
+
+            <span class="settings-row-label">
+
+                <i class="fa-solid fa-microphone"></i>
+
+                Microphone
+
+            </span>
+
+            <button type="button" id="settingsMicToggle" class="settings-switch" aria-label="Toggle microphone"></button>
 
         </div>
 
-        <button id="saveSettings">
+    </div>
 
-            Save
+    <div class="settings-section">
+
+        <p class="settings-section-title">Video</p>
+
+        <div class="settings-row">
+
+            <span class="settings-row-label">
+
+                <i class="fa-solid fa-video"></i>
+
+                Camera
+
+            </span>
+
+            <button type="button" id="settingsCamToggle" class="settings-switch" aria-label="Toggle camera"></button>
+
+        </div>
+
+    </div>
+
+    <div class="settings-section">
+
+        <p class="settings-section-title">Meeting</p>
+
+        <button type="button" id="settingsParticipantsBtn" class="theme-option">
+
+            <span class="theme-option-label">
+
+                <i class="fa-solid fa-users"></i>
+
+                View participants
+
+            </span>
+
+            <i class="fa-solid fa-chevron-right"></i>
 
         </button>
 
